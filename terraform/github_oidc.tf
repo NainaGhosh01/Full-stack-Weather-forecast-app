@@ -22,7 +22,7 @@ resource "aws_iam_role" "github_actions_deploy" {
         Action = "sts:AssumeRoleWithWebIdentity"
         Condition = {
           StringLike = {
-            "token.actions.githubusercontent.com:sub" = "repo:<NainaGhosh01>/<Full-stack-Weather-forecast-app>:ref:refs/heads/main"
+            "token.actions.githubusercontent.com:sub" = "repo:NainaGhosh01/Full-stack-Weather-forecast-app:ref:refs/heads/main"
           }
         }
       }
