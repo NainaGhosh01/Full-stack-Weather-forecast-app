@@ -7,7 +7,7 @@ terraform {
     }
   }
   backend "s3" {
-    bucket         = "OnFinanceAI-terraform-bucket"
+    bucket         = "onfinanceai-terraform-bucket"
     key            = "weather-app/terraform.tfstate"
     region         = "eu-west-1"
     dynamodb_table = "terraform-locks"
