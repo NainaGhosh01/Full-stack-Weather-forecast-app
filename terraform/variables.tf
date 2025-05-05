@@ -1,7 +1,4 @@
-variable "region" {
-  default = "eu-west-1"
-}
-
-variable "project_name" {
-  default = "weather-app"
+variable "weather_api_key" {
+  type        = string
+  description = "API key for OpenWeatherMap"
 }
