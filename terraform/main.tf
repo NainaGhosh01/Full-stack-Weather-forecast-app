@@ -1,19 +1,34 @@
-terraform {
-  required_version = ">= 1.3"
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-  backend "s3" {
-    bucket         = "onfinanceai-terraform-bucket"
-    key            = "weather-app/terraform.tfstate"
-    region         = "eu-west-1"
-    dynamodb_table = "terraform-locks"
+provider "azurerm" {
+  features {}
+}
+
+resource "azurerm_resource_group" "rg" {
+  name     = "weather-rg"
+  location = "East US"
+}
+
+resource "azurerm_app_service_plan" "plan" {
+  name                = "weather-app-plan"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  sku {
+    tier = "Basic"
+    size = "B1"
   }
 }
 
-provider "aws" {
-  region = "eu-west-1"
+resource "azurerm_app_service" "app" {
+  name                = "naina-weather-forecast-app-12345" # must be globally unique
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  app_service_plan_id = azurerm_app_service_plan.plan.id
+
+  site_config {
+    linux_fx_version = "DOCKER|ghcr.io/nainaghosh/weather-forecast-app:latest"
+  }
+
+  app_settings = {
+    "WEATHER_API_KEY" = var.weather_api_key
+    "WEBSITES_PORT"   = "5000"
+  }
 }
