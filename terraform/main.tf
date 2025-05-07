@@ -24,7 +24,7 @@ resource "azurerm_app_service" "app" {
   app_service_plan_id = azurerm_app_service_plan.plan.id
 
   site_config {
-    linux_fx_version = "DOCKER|ghcr.io/nainaghosh/weather-forecast-app:latest"
+    linux_fx_version = "DOCKER|nainaghosh/weather-app:latest"
   }
 
   app_settings = {
