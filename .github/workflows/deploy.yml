@@ -1,38 +1,37 @@
-name: Deploy to Azure
+name: Build and Deploy to Azure App Service (DockerHub)
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+env:
+  DOCKER_IMAGE: nainaghosh/weather-app
+  AZURE_WEBAPP_NAME: weather-forecast-app
+  AZURE_RESOURCE_GROUP: weather-rg
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
-    env:
-      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-      WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Log in to GitHub Container Registry
-      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+    - name: Log in to DockerHub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Build and push Docker image
       run: |
-        docker build -t ghcr.io/${{ github.repository }}:latest .
-        docker push ghcr.io/${{ github.repository }}:latest
+        docker build -t $DOCKER_IMAGE .
+        docker push $DOCKER_IMAGE
 
-    - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v3
-
-    - name: Terraform Init
-      run: terraform init
-      working-directory: terraform
-
-    - name: Terraform Apply
-      run: terraform apply -auto-approve -var="weather_api_key=$WEATHER_API_KEY"
-      working-directory: terraform
+    - name: Deploy to Azure Web App (Container Image)
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+        images: ${{ env.DOCKER_IMAGE }}
