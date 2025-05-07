@@ -4,6 +4,8 @@ This is a **Flask-based Weather Forecast Web Application** deployed automaticall
 
 ---
 
+---
+
 ## 🎯 Objective
 
 To build and deploy a simple, responsive weather forecast web app on Microsoft Azure using automation-first principles:
@@ -12,6 +14,8 @@ To build and deploy a simple, responsive weather forecast web app on Microsoft A
 - Use **Terraform** to define and deploy Azure infrastructure
 - Use **GitHub Actions** for full CI/CD pipeline
 - Keep the system scalable, repeatable, and cloud-native
+
+---
 
 ---
 
@@ -30,14 +34,12 @@ To build and deploy a simple, responsive weather forecast web app on Microsoft A
 
 ## 🚀 Features
 
-- ✅ Clean and simple UI to fetch live weather
-- ✅ Flask backend with API consumption from OpenWeatherMap
-- ✅ Dockerized app for platform independence 
-- ✅ Infrastructure provisioned with Terraform
-- ✅ GitHub Actions workflow for full automation 
+- ✅ CI/CD pipeline with GitHub Actions to automate the build, push, and deployment of Docker images to Azure.
+- ✅ Docker Hub used for storing and pulling container images.
+- ✅ Azure App Service to deploy and host the weather app in a container.
+- ✅ Terraform used for provisioning Azure resources like the Resource Group, App Service Plan, and App Service.
 - ✅ Output the **live app URL** after deployment
-- ✅ Secure secret handling using GitHub Secrets
-- ✅ No local installation required!
+- ✅ Weather API Integration to get live weather data for any city.
 
 ---
 
@@ -46,10 +48,22 @@ To build and deploy a simple, responsive weather forecast web app on Microsoft A
 ## ⚙️ How It Works
 
 1. Code is pushed to main → triggers GitHub Actions.
-2. Docker image is built and pushed to GitHub Container Registry (GHCR).
+2. Docker image is built and pushed to Dockerhub.
 3. Terraform creates Azure resources: Resource Group, App Service Plan, Web App.
 4. Azure Web App pulls the container and runs the Flask app.
 5. GitHub Actions outputs the live app URL.
+
+---
+
+---
+
+## 🤖 Conclusion
+
+This project demonstrates how to:
+
+- Containerize a Flask web app using Docker.
+- Push the image to Docker Hub.
+- Automate the deployment to Azure App Service using GitHub Actions and Terraform.
 
 ---
 
