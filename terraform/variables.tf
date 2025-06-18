@@ -1,4 +1,12 @@
+variable "app_name" {
+  description = "App Service name"
+}
+
+variable "docker_image" {
+  description = "Docker image from DockerHub"
+}
+
 variable "weather_api_key" {
-  type        = string
-  description = "API key for OpenWeatherMap"
+  description = "Weather API Key"
+  sensitive   = true
 }
