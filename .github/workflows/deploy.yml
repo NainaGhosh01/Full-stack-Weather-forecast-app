@@ -1,4 +1,4 @@
-name: Build and Deploy to Azure App Service (DockerHub)
+name: Build, Push Docker Image & Deploy to Azure (Fully Automated)
 
 on:
   push:
@@ -6,12 +6,12 @@ on:
       - main
 
 env:
-  DOCKER_IMAGE: nainaghosh/weather-app
-  AZURE_WEBAPP_NAME: weather-forecast-app
-  AZURE_RESOURCE_GROUP: weather-rg
+  DOCKER_IMAGE: nainaghosh/weather-app:latest
+  AZURE_APP_NAME: weather-forecast-app
+  TF_DIRECTORY: terraform
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,9 +29,22 @@ jobs:
         docker build -t $DOCKER_IMAGE .
         docker push $DOCKER_IMAGE
 
-    - name: Deploy to Azure Web App (Container Image)
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-        images: ${{ env.DOCKER_IMAGE }}
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+
+    - name: Terraform Init
+      working-directory: ${{ env.TF_DIRECTORY }}
+      run: terraform init
+
+    - name: Terraform Apply
+      working-directory: ${{ env.TF_DIRECTORY }}
+      run: |
+        terraform apply -auto-approve \
+          -var="app_name=${{ env.AZURE_APP_NAME }}" \
+          -var="docker_image=${{ env.DOCKER_IMAGE }}" \
+          -var="weather_api_key=${{ secrets.WEATHER_API_KEY }}"
+      env:
+        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
