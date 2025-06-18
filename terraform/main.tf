@@ -11,6 +11,9 @@ resource "azurerm_app_service_plan" "plan" {
   name                = "weather-app-plan"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
+  kind                = "Linux"
+  reserved            = true
+
   sku {
     tier = "Basic"
     size = "B1"
@@ -18,13 +21,13 @@ resource "azurerm_app_service_plan" "plan" {
 }
 
 resource "azurerm_app_service" "app" {
-  name                = "naina-weather-forecast-app-12345" # must be globally unique
+  name                = var.app_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   app_service_plan_id = azurerm_app_service_plan.plan.id
 
   site_config {
-    linux_fx_version = "DOCKER|nainaghosh/weather-app:latest"
+    linux_fx_version = "DOCKER|${var.docker_image}"
   }
 
   app_settings = {
