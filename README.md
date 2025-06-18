@@ -1,4 +1,4 @@
-# 🌤️ Weather Forecast Web App - Full AWS DevOps Automation
+# 🌤️ Weather Forecast Web App - Full Azure DevOps Automation
 
 This is a **Flask-based Weather Forecast Web Application** deployed automatically to **Azure App Service** using **Terraform** and **GitHub Actions**. It includes containerized deployment with Docker, secrets managed via GitHub, and full infrastructure as code setup.
 
